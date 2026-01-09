@@ -4,13 +4,9 @@
 
 An end-to-end MLOps solution for driver safety. This project implements a real-time computer vision pipeline using Dlib for facial landmark detection, containerized via Docker, and deployed as a serverless microservice on Google Cloud Platform.
 
-<br>
-
 <p align="center">
-  <video src="https://github.com/user-attachments/assets/f5a2bca1-d98b-498f-a155-f844c7c8752b" width="100%" autoplay loop muted playsinline></video>
+  <video src="https://github.com/user-attachments/assets/95ff147b-6f91-4a2c-bb1e-ec09559749aa" width="100%" autoplay loop muted playsinline></video>
 </p>
-
-<br>
 
 ## 📋 Table of Contents
 - [Project Architecture](#-project-architecture)
