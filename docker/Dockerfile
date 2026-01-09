@@ -6,25 +6,26 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
-# Install to a local folder so we can copy it later
 RUN pip install --user --no-cache-dir -r requirements.txt
 
 # STAGE 2: Final Runner
 FROM python:3.9-slim
 
-# Only install the bare minimum runtime libraries (No compilers!)
+# IMPORTANT: Added ffmpeg for video decoding
 RUN apt-get update && apt-get install -y \
-    libgl1 libglib2.0-0 \
+    libgl1 \
+    libglib2.0-0 \
+    ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
-# Copy the installed python packages from the builder stage
 COPY --from=builder /root/.local /root/.local
 COPY . .
 
-# Ensure the local bin is in the path
 ENV PATH=/root/.local/bin:$PATH
+# Ensure python can find your 'app' and 'core' folders
+ENV PYTHONPATH=/app
 
-EXPOSE 8000
-CMD ["python", "-m", "app.main_api"]
+# Cloud Run uses the PORT env var; we use a shell form to respect it
+CMD ["sh", "-c", "python -m app.main_api --host 0.0.0.0 --port ${PORT:-8000}"]
