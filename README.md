@@ -1,33 +1,37 @@
-# Fatigue-detection-mlops
-An End-to-End MLOps Pipeline: From Local Development to Cloud-Native Deployment
+# 🎨 Real-Time Driver Drowsiness Detection System
+### *An End-to-End MLOps Pipeline: From Local Development to Cloud-Native Deployment*
 
-🚀 Project Overview
-This project features a robust computer vision pipeline designed to monitor driver safety in real-time. By leveraging Dlib's pre-trained HOG + Linear SVM face detector and 68-point facial landmark predictor, the system analyzes facial geometry to detect signs of fatigue, specifically blinking patterns and yawning frequency.
+<p align="center">
+  <video src="YOUR_VIDEO_LINK_HERE" width="100%" autoplay loop muted playsinline></video>
+</p>
 
-Key Features:
-Facial Landmark Analysis: Uses Eye Aspect Ratio (EAR) and Mouth Aspect Ratio (MAR) for precise detection.
+---
 
-Real-Time Analytics: Annotates frames with live counters for blinks and yawns.
+## 🚀 Project Overview
+This project features a robust computer vision pipeline designed to monitor driver safety in real-time. By leveraging **Dlib's pre-trained HOG + Linear SVM face detector** and **68-point facial landmark predictor**, the system analyzes facial geometry to detect signs of fatigue, specifically blinking patterns and yawning frequency.
 
-Cloud-Native Architecture: Fully containerized and deployed on Google Cloud Run for global accessibility.
+### Key Features:
+* **Facial Landmark Analysis:** Uses Eye Aspect Ratio (EAR) and Mouth Aspect Ratio (MAR) for precise detection.
+* **Real-Time Analytics:** Annotates frames with live counters for blinks and yawns.
+* **Cloud-Native Architecture:** Fully containerized and deployed on Google Cloud Run for global accessibility.
+* **Asynchronous Processing:** Built with FastAPI to handle high-concurrency video streaming.
 
-Asynchronous Processing: Built with FastAPI to handle high-concurrency video streaming.
+---
 
-🛠️ Tech Stack
-ML/CV: Python, OpenCV, Dlib, NumPy.
+## 🛠️ Tech Stack
+* **ML/CV:** Python, OpenCV, Dlib, NumPy
+* **API Framework:** FastAPI, Uvicorn
+* **DevOps:** Docker (Multi-stage builds), Google Artifact Registry
+* **Cloud:** Google Cloud Run (Serverless)
 
-API Framework: FastAPI, Uvicorn.
+---
 
-DevOps: Docker (Multi-stage builds), Google Artifact Registry.
+## 🏗️ Development & Deployment Lifecycle
 
-Cloud: Google Cloud Run (Serverless).
+### 1. Local Development & Testing
+The core logic was first developed and validated locally. We used FastAPI to create a `StreamingResponse` that allows the browser to render ML-processed frames as a live MJPEG stream.
 
-🏗️ Development & Deployment Lifecycle
-1. Local Development & Testing
-The core logic was first developed and validated locally. We used FastAPI to create a StreamingResponse that allows the browser to render ML-processed frames as a live MJPEG stream.
-
-Bash
-
+```bash
 # Running the app locally
 uvicorn app.main_api:app --reload
 2. Optimized Containerization (Multi-Stage Build)
@@ -73,11 +77,11 @@ gcloud run deploy drowsiness-service \
 📈 Future Roadmap
 While this project serves as a functional MVP (Minimum Viable Product), future iterations will focus on:
 
-Model Optimization: Migrating from Dlib to MediaPipe or YOLOv8-Face for higher FPS on mobile devices.
+Model Optimization: Migrating from Dlib to MediaPipe or YOLOv8-Face for higher FPS.
 
-Temporal Analysis: Implementing LSTMs or Transformers to analyze the duration of eye closure rather than just frequency.
+Temporal Analysis: Implementing LSTMs or Transformers to analyze the duration of eye closure.
 
-Road Safety Integration: Extending the use case to IoT devices for long-haul truck drivers to trigger real-time auditory alerts.
+Road Safety Integration: Extending the use case to IoT devices for long-haul truck drivers to trigger auditory alerts.
 
 👨‍💻 Author
-Aman Vasisht
+Aman Vasisht LinkedIn | Portfolio
