@@ -1,0 +1,5 @@
+The initial Docker image size amounted to 1.89GB, which is reasonable as the dlib and OpenCV libraries require CMake and C++ compilers to build from source for high-performance execution.
+
+To optimize this, we implemented a multi-stage build. In Stage 1 (Builder), we compile the libraries. In Stage 2 (Runner), we carry forward only the compiled binaries and the Python environment, reducing the final image size from 1.89GB to approximately 1.3GB.
+
+This optimization is beneficial for CI/CD and production: it makes uploading/pushing the image >1.5x faster and reduces storage and deployment costs on cloud servers like AWS EC2.

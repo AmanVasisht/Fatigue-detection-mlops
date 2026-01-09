@@ -4,3 +4,4 @@ opencv-python-headless
 dlib
 numpy
 scipy
+python-multipart
