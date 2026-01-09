@@ -4,45 +4,8 @@ from core.preprocess.preprocess_utils import (
 )
 
 
-def yawness_process(base64_image, yawn_count, yawn_start_time, yawn_end_time):
-    try:
-        yawn_count, yawn_start_time, yawn_end_time, frame = detect_yawnssss(
-            base64_image,
-            yawn_count,
-            yawn_start_time,
-            yawn_end_time,
-        )
-        return yawn_count, yawn_start_time, yawn_end_time, frame
+def yawness_process(frame, yawn_count, yawn_start_time, yawn_end_time):
+    return detect_yawnssss(frame, yawn_count, yawn_start_time, yawn_end_time)
 
-    except Exception as e:
-        raise e
-
-
-def blink_process(
-    base64_image,
-    blink_start_time,
-    COUNTER,
-    drowsy_blink_count,
-    blink_threshold,
-    blink_durations,
-):
-    try:
-        (
-            COUNTER,
-            blink_start_time,
-            blink_durations,
-            frame,
-            drowsy_blink_count,
-        ) = blink_detectionn(
-            base64_image,
-            blink_start_time,
-            COUNTER,
-            drowsy_blink_count,
-            blink_threshold,
-            blink_durations,
-        )
-
-        return COUNTER, blink_start_time, blink_durations, frame, drowsy_blink_count
-
-    except Exception as e:
-        raise e
+def blink_process(frame, blink_start_time, COUNTER, drowsy_blink_count, blink_threshold, blink_durations):
+    return blink_detectionn(frame, blink_start_time, COUNTER, drowsy_blink_count, blink_threshold, blink_durations)
