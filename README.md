@@ -1,87 +1,137 @@
-# 🎨 Real-Time Driver Drowsiness Detection System
-### *An End-to-End MLOps Pipeline: From Local Development to Cloud-Native Deployment*
+💤 Fatigue Detection – End-to-End MLOps Pipeline
 
-<p align="center">
-  <video src="YOUR_VIDEO_LINK_HERE" width="100%" autoplay loop muted playsinline></video>
-</p>
+An end-to-end computer vision + MLOps project that detects driver fatigue in real time using facial landmark analysis.
+The system tracks blinks and yawns from live video streams and is deployed as a cloud-native, serverless service.
 
----
+🔍 What This Project Does
 
-## 🚀 Project Overview
-This project features a robust computer vision pipeline designed to monitor driver safety in real-time. By leveraging **Dlib's pre-trained HOG + Linear SVM face detector** and **68-point facial landmark predictor**, the system analyzes facial geometry to detect signs of fatigue, specifically blinking patterns and yawning frequency.
+This application processes live camera frames, detects a human face, extracts facial landmarks, and analyzes eye and mouth geometry to identify signs of fatigue.
 
-### Key Features:
-* **Facial Landmark Analysis:** Uses Eye Aspect Ratio (EAR) and Mouth Aspect Ratio (MAR) for precise detection.
-* **Real-Time Analytics:** Annotates frames with live counters for blinks and yawns.
-* **Cloud-Native Architecture:** Fully containerized and deployed on Google Cloud Run for global accessibility.
-* **Asynchronous Processing:** Built with FastAPI to handle high-concurrency video streaming.
+Fatigue indicators used
 
----
+Eye Aspect Ratio (EAR) → Blink detection
 
-## 🛠️ Tech Stack
-* **ML/CV:** Python, OpenCV, Dlib, NumPy
-* **API Framework:** FastAPI, Uvicorn
-* **DevOps:** Docker (Multi-stage builds), Google Artifact Registry
-* **Cloud:** Google Cloud Run (Serverless)
+Mouth Aspect Ratio (MAR) → Yawn detection
 
----
+Processed frames are streamed back to the client with live annotations and counters.
 
-## 🏗️ Development & Deployment Lifecycle
+✨ Key Highlights
 
-### 1. Local Development & Testing
-The core logic was first developed and validated locally. We used FastAPI to create a `StreamingResponse` that allows the browser to render ML-processed frames as a live MJPEG stream.
+📌 Facial landmark–based fatigue detection
 
-```bash
-# Running the app locally
+🎥 Live MJPEG video streaming
+
+⚡ Asynchronous FastAPI backend
+
+🐳 Optimized multi-stage Docker builds
+
+☁️ Serverless deployment on Google Cloud Run
+
+🔁 Production-style image registry workflow
+
+🧠 Tech Stack
+
+Machine Learning / Computer Vision
+
+Python
+
+OpenCV
+
+Dlib (HOG + Linear SVM face detector)
+
+NumPy
+
+Backend
+
+FastAPI
+
+Uvicorn
+
+DevOps & Cloud
+
+Docker (multi-stage builds)
+
+Google Artifact Registry
+
+Google Cloud Run
+
+🏗️ Architecture Overview
+Camera Stream
+     ↓
+Face Detection (Dlib)
+     ↓
+Facial Landmarks (68-point)
+     ↓
+EAR / MAR Computation
+     ↓
+Fatigue Events (Blink / Yawn)
+     ↓
+Annotated MJPEG Stream (FastAPI)
+
+🚀 Local Development
+
+Run the application locally for testing and development:
+
 uvicorn app.main_api:app --reload
-2. Optimized Containerization (Multi-Stage Build)
-To ensure high performance and low latency on the cloud, a Multi-Stage Dockerfile was implemented. This reduced the final image size by separating the build environment (compilers/headers) from the runtime environment.
 
-3. Google Cloud Deployment (CI/CD Flow)
-The deployment followed a professional production workflow:
 
-A. Environment Setup
-Install the Google Cloud SDK and authenticate:
+The browser receives a live video stream with fatigue metrics rendered in real time.
 
-Bash
+🐳 Dockerization Strategy
 
+A multi-stage Dockerfile is used to:
+
+Compile heavy dependencies (Dlib, OpenCV) in a build stage
+
+Keep the runtime image lightweight and fast
+
+Reduce cold-start latency on Cloud Run
+
+☁️ Cloud Deployment (Google Cloud Run)
+1️⃣ Authenticate with Google Cloud
 gcloud auth login
 gcloud auth configure-docker us-central1-docker.pkg.dev
-B. Artifact Management
-Create a private repository to host the production-ready Docker images:
 
-Bash
-
+2️⃣ Create Artifact Registry
 gcloud artifacts repositories create drowsiness-repo \
-    --repository-format=docker \
-    --location=us-central1
-C. Build, Tag, & Push
-Bash
+  --repository-format=docker \
+  --location=us-central1
 
-# Build the image
+3️⃣ Build and Push Docker Image
 docker build -t fatigue-app-slim .
 
-# Tag for Google Artifact Registry
-docker tag fatigue-app-slim us-central1-docker.pkg.dev/[PROJECT-ID]/drowsiness-repo/fatigue-app-slim
+docker tag fatigue-app-slim \
+  us-central1-docker.pkg.dev/[PROJECT-ID]/drowsiness-repo/fatigue-app-slim
 
-# Push to the cloud
-docker push us-central1-docker.pkg.dev/[PROJECT-ID]/drowsiness-repo/fatigue-app-slim
-D. Serverless Deployment
-Deploying to Cloud Run with allocated resources for ML inference:
+docker push \
+  us-central1-docker.pkg.dev/[PROJECT-ID]/drowsiness-repo/fatigue-app-slim
 
-Bash
-
+4️⃣ Deploy to Cloud Run
 gcloud run deploy drowsiness-service \
   --image us-central1-docker.pkg.dev/[PROJECT-ID]/drowsiness-repo/fatigue-app-slim \
-  --memory 2Gi --cpu 2 --timeout 300 --platform managed --region us-central1 --allow-unauthenticated
-📈 Future Roadmap
-While this project serves as a functional MVP (Minimum Viable Product), future iterations will focus on:
+  --memory 2Gi \
+  --cpu 2 \
+  --timeout 300 \
+  --region us-central1 \
+  --platform managed \
+  --allow-unauthenticated
 
-Model Optimization: Migrating from Dlib to MediaPipe or YOLOv8-Face for higher FPS.
+📈 Future Improvements
 
-Temporal Analysis: Implementing LSTMs or Transformers to analyze the duration of eye closure.
+This project is currently an MVP, with several planned upgrades:
 
-Road Safety Integration: Extending the use case to IoT devices for long-haul truck drivers to trigger auditory alerts.
+🚀 Model optimization
+
+Replace Dlib with MediaPipe or YOLOv8-Face for higher FPS
+
+🧠 Temporal modeling
+
+Use LSTMs / Transformers to detect prolonged eye closure
+
+🔔 Real-world integration
+
+Connect to IoT devices for real-time alerts in long-haul vehicles
 
 👨‍💻 Author
-Aman Vasisht LinkedIn | Portfolio
+
+Aman Vasisht
