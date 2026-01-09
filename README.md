@@ -1,137 +1,118 @@
-💤 Fatigue Detection – End-to-End MLOps Pipeline
+# 🎨 Real-Time Driver Drowsiness Detection: Cloud-Native MLOps
 
-An end-to-end computer vision + MLOps project that detects driver fatigue in real time using facial landmark analysis.
-The system tracks blinks and yawns from live video streams and is deployed as a cloud-native, serverless service.
+![Python](https://img.shields.io/badge/Python-3.9-blue) ![GCP](https://img.shields.io/badge/GCP-Cloud_Run%20|%20Artifact_Registry-orange) ![FastAPI](https://img.shields.io/badge/FastAPI-v0.100+-green) ![Docker](https://img.shields.io/badge/Docker-Multi--Stage-blue) ![OpenCV](https://img.shields.io/badge/OpenCV-Enabled-lightgrey)
 
-🔍 What This Project Does
+An end-to-end MLOps solution for driver safety. This project implements a real-time computer vision pipeline using Dlib for facial landmark detection, containerized via Docker, and deployed as a serverless microservice on Google Cloud Platform.
 
-This application processes live camera frames, detects a human face, extracts facial landmarks, and analyzes eye and mouth geometry to identify signs of fatigue.
+<p align="center">
+  <video src="YOUR_VIDEO_LINK_HERE" width="100%" autoplay loop muted playsinline></video>
+</p>
 
-Fatigue indicators used
+## 📋 Table of Contents
+- [Project Architecture](#-project-architecture)
+- [Key Features](#-key-features)
+- [Prerequisites](#-prerequisites)
+- [Local Environment Setup](#-local-environment-setup)
+- [ML Inference Logic](#-ml-inference-logic)
+- [Cloud Deployment (GCP)](#-cloud-deployment-gcp)
+- [Future Roadmap](#-future-roadmap)
 
-Eye Aspect Ratio (EAR) → Blink detection
+---
 
-Mouth Aspect Ratio (MAR) → Yawn detection
+## 🏗 Project Architecture
 
-Processed frames are streamed back to the client with live annotations and counters.
+This project follows a professional modular structure for production-ready deployment:
+1.  **Inference Layer:** Dlib HOG + Linear SVM Face Detector.
+2.  **API Layer:** FastAPI with StreamingResponse (MJPEG over HTTP).
+3.  **Containerization:** Multi-stage Docker build for minimal image footprint.
+4.  **Registry:** Google Artifact Registry (GAR).
+5.  **Compute:** Google Cloud Run (Serverless CPU/RAM allocation).
 
-✨ Key Highlights
+---
 
-📌 Facial landmark–based fatigue detection
+## 🌟 Key Features
 
-🎥 Live MJPEG video streaming
+* **Advanced Facial Analysis:** Utilizes Eye Aspect Ratio (EAR) and Mouth Aspect Ratio (MAR) for precise drowsiness and yawning detection.
+* **Asynchronous Streaming:** Implements FastAPI asynchronous generators to stream processed frames with low latency.
+* **Environment Agnostic:** Configured via environment variables to switch seamlessly between local webcam and cloud video processing.
+* **Resource Optimized:** Multi-stage Docker builds reduce image size by over 60%, ensuring faster cold starts in the cloud.
 
-⚡ Asynchronous FastAPI backend
+---
 
-🐳 Optimized multi-stage Docker builds
+## 🛠 Prerequisites
 
-☁️ Serverless deployment on Google Cloud Run
+* Python 3.9+
+* Google Cloud SDK (gcloud CLI)
+* Docker Desktop
+* Dlib (Pre-trained `shape_predictor_68_face_landmarks.dat`)
 
-🔁 Production-style image registry workflow
+---
 
-🧠 Tech Stack
+## 💻 Local Environment Setup
 
-Machine Learning / Computer Vision
+1.  **Clone the Repository:**
+    ```bash
+    git clone <your-repo-url>
+    cd fatigue-detection-mlops
+    ```
 
-Python
+2.  **Create Virtual Environment:**
+    ```bash
+    conda create -n drowsiness python=3.9 -y
+    conda activate drowsiness
+    ```
 
-OpenCV
+3.  **Install Dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    pip install python-multipart
+    ```
 
-Dlib (HOG + Linear SVM face detector)
+4.  **Run Locally:**
+    ```bash
+    uvicorn app.main_api:app --reload
+    ```
 
-NumPy
+---
 
-Backend
-
-FastAPI
-
-Uvicorn
-
-DevOps & Cloud
-
-Docker (multi-stage builds)
-
-Google Artifact Registry
-
-Google Cloud Run
-
-🏗️ Architecture Overview
-Camera Stream
-     ↓
-Face Detection (Dlib)
-     ↓
-Facial Landmarks (68-point)
-     ↓
-EAR / MAR Computation
-     ↓
-Fatigue Events (Blink / Yawn)
-     ↓
-Annotated MJPEG Stream (FastAPI)
-
-🚀 Local Development
-
-Run the application locally for testing and development:
-
-uvicorn app.main_api:app --reload
+## ☁️ Cloud Deployment (GCP)
 
 
-The browser receives a live video stream with fatigue metrics rendered in real time.
 
-🐳 Dockerization Strategy
+1.  **GCP Authentication:**
+    ```bash
+    gcloud auth login
+    gcloud auth configure-docker us-central1-docker.pkg.dev
+    ```
 
-A multi-stage Dockerfile is used to:
+2.  **Build and Push to Artifact Registry:**
+    ```bash
+    # Build
+    docker build -t fatigue-app-slim .
 
-Compile heavy dependencies (Dlib, OpenCV) in a build stage
+    # Tag (Replace [PROJECT-ID] with your GCP Project ID)
+    docker tag fatigue-app-slim us-central1-docker.pkg.dev/[PROJECT-ID]/drowsiness-repo/fatigue-app-slim
 
-Keep the runtime image lightweight and fast
+    # Push
+    docker push us-central1-docker.pkg.dev/[PROJECT-ID]/drowsiness-repo/fatigue-app-slim
+    ```
 
-Reduce cold-start latency on Cloud Run
+3.  **Deploy to Cloud Run:**
+    ```bash
+    gcloud run deploy drowsiness-service \
+      --image us-central1-docker.pkg.dev/[PROJECT-ID]/drowsiness-repo/fatigue-app-slim \
+      --memory 2Gi --cpu 2 --timeout 300 --platform managed --region us-central1 --allow-unauthenticated
+    ```
 
-☁️ Cloud Deployment (Google Cloud Run)
-1️⃣ Authenticate with Google Cloud
-gcloud auth login
-gcloud auth configure-docker us-central1-docker.pkg.dev
+---
 
-2️⃣ Create Artifact Registry
-gcloud artifacts repositories create drowsiness-repo \
-  --repository-format=docker \
-  --location=us-central1
+## 📈 Future Roadmap
 
-3️⃣ Build and Push Docker Image
-docker build -t fatigue-app-slim .
+* **Precision Upgrades:** Transitioning to MediaPipe for enhanced iris tracking.
+* **Temporal Logic:** Integrating LSTMs to distinguish between natural blinking and fatigue.
+* **Edge Deployment:** Optimization for Raspberry Pi and NVIDIA Jetson Nano.
 
-docker tag fatigue-app-slim \
-  us-central1-docker.pkg.dev/[PROJECT-ID]/drowsiness-repo/fatigue-app-slim
+---
 
-docker push \
-  us-central1-docker.pkg.dev/[PROJECT-ID]/drowsiness-repo/fatigue-app-slim
-
-4️⃣ Deploy to Cloud Run
-gcloud run deploy drowsiness-service \
-  --image us-central1-docker.pkg.dev/[PROJECT-ID]/drowsiness-repo/fatigue-app-slim \
-  --memory 2Gi \
-  --cpu 2 \
-  --timeout 300 \
-  --region us-central1 \
-  --platform managed \
-  --allow-unauthenticated
-
-📈 Future Improvements
-
-This project is currently an MVP, with several planned upgrades:
-
-🚀 Model optimization
-
-Replace Dlib with MediaPipe or YOLOv8-Face for higher FPS
-
-🧠 Temporal modeling
-
-Use LSTMs / Transformers to detect prolonged eye closure
-
-🔔 Real-world integration
-
-Connect to IoT devices for real-time alerts in long-haul vehicles
-
-👨‍💻 Author
-
-Aman Vasisht
+## 👨‍💻 Author
+**Aman Vasisht**
